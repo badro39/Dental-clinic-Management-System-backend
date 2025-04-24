@@ -1,0 +1,49 @@
+{
+  "name": "medical-plateform",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon -r newrelic index.js",
+    "prebuild": "rimraf dist",
+    "build": "npx babel . --out-dir dist --ignore node_modules/**,dist/**",
+    "start": "node dist/index.js"
+  },
+  "author": "Djaballah Badr",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "express-validator": "^7.2.1",
+    "firebase-admin": "^13.2.0",
+    "helmet": "^8.1.0",
+    "http": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.13.2",
+    "newrelic": "^12.17.0",
+    "ngrok": "^5.0.0-beta.2",
+    "nodemailer": "^6.10.0",
+    "nodemon": "^3.1.9",
+    "open": "^10.1.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "twilio": "^5.5.1",
+    "xss": "^1.0.15"
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-import-assertions": "^7.26.0",
+    "@babel/plugin-transform-json-modules": "^7.26.8",
+    "eslint": "^9.24.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.6",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1"
+  }
+}
