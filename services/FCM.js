@@ -1,10 +1,10 @@
-// // dev mode
-// import admin from 'firebase-admin';
-// import serviceAccount from '../config/serviceAccount.json' assert { type: 'json' };
+// dev mode
+import admin from 'firebase-admin';
+import serviceAccount from '../config/serviceAccount.json' assert { type: 'json' };
 
-// other modes
-const admin = require('firebase-admin');
-const serviceAccount = require('../config/serviceAccount.json');
+// // other modes
+// const admin = require('firebase-admin');
+// const serviceAccount = require('../config/serviceAccount.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
