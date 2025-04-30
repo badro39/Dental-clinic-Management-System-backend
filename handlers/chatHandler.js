@@ -23,6 +23,7 @@ export default function chatHandler(io, socket) {
   // Join a Chat (user joins an existing chat by chatId)
   socket.on('join_chat', (chatId) => {
     try {
+      // socket.io join, not Array.join
       socket.join(chatId);
     } catch (err) {
       socket.emit('error', `error while join in a chat: ${err}`);

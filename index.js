@@ -25,6 +25,7 @@ import publicRoutes from './api/public.js';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import csurf from "csurf"
 
 // socket.io
 import setupSocket from './config/socket.js';
@@ -38,11 +39,14 @@ connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+
+const csrfProtection = csurf({ cookie: true });
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
   message: 'Too many requests from this IP, please try again later.',
 });
+
 const server = http.createServer(app);
 
 app.use(
@@ -53,10 +57,16 @@ app.use(
   }),
 );
 
+app.use((req, res, next) => {
+  if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+    csrfProtection(req, res, next);
+  } else {
+    next();
+  }
+});
 
 app.use(helmet());
 app.use(limiter);
-
 app.use(express.json());
 app.use(cookieParser());
 app.use(sanitizeMiddleware);
