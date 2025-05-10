@@ -23,16 +23,15 @@ import publicRoutes from './api/public.js';
 
 // security
 import cors from 'cors';
+import csurf from 'csurf';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
-import csurf from "csurf"
 
 // socket.io
 import setupSocket from './config/socket.js';
 
 // http
 import http from 'http';
-
 
 config();
 connectDB();
@@ -48,29 +47,30 @@ const limiter = rateLimit({
 });
 
 const server = http.createServer(app);
+const corsOptions = {
+  origin: process.env.URL,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+};
 
-app.use(
-  cors({
-    origin: process.env.URL,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-  }),
-);
-
-app.use((req, res, next) => {
+const Csurf = (req, res, next) => {
   if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
     csrfProtection(req, res, next);
   } else {
     next();
   }
-});
+};
 
+// middlewares
+app.use(cors(corsOptions));
+//app.use(Csurf);
 app.use(helmet());
 app.use(limiter);
 app.use(express.json());
 app.use(cookieParser());
 app.use(sanitizeMiddleware);
 
+// routes
 app.use('/api/protected', authenticated, mainRoutes);
 app.use('/api/public', publicRoutes);
 

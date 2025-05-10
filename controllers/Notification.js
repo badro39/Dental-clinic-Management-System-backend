@@ -3,9 +3,9 @@ import Notification from '../models/notification.js';
 import { Patient } from '../models/user.js';
 
 // services
+import { scheduleFCM, sendFCM } from '../services/FCM.js';
 import { scheduleEmail, sendEmail } from '../services/sendEmail.js';
 import { scheduleSMS, sendSMS } from '../services/sendSMS.js';
-import { sendFCM, scheduleFCM } from '../services/FCM.js';
 
 export const getAllNotifications = async (req, res, next) => {
   try {
@@ -36,29 +36,36 @@ export const getNotificationByPatientId = async (req, res, next) => {
 };
 
 export const addNotification = async (req, res, next) => {
-  const { subject, message, sendDate, patientId, sendBy } = req.sanitizedBody;
+  const { subject, message, sendDate, patientId, sendBy, token } = req.sanitizedBody;
   try {
     const patient = await Patient.findById(patientId);
     let success;
-    if (patient.length == 0)
+    if (!patient)
       return res.status(404).json({ error: 'Patient Not Found!' });
     if (sendBy.includes('email')) {
       success = sendDate
-        ? scheduleEmail(subject, message, patient.email, sendDate)
-        : sendEmail(subject, message, patient.email);
+        ? await scheduleEmail(subject, message, patient.email, sendDate)
+            .then((result) => result)
+            .catch((err) => console.error('err: ', err))
+        : await sendEmail(subject, message, patient.email);
     }
 
     if (sendBy.includes('sms')) {
       success = sendDate
-        ? scheduleSMS(message, patient.tel, sendDate)
-        : sendSMS(message, patient.tel);
+        ? await scheduleSMS(message, patient.tel, sendDate)
+            .then((result) => result)
+            .catch((err) => console.error('err: ', err))
+        : await sendSMS(message, patient.tel);
     }
 
-    if(sendBy.includes("system")){
+    if (sendBy.includes('system')) {
       success = sendDate
-        ? scheduleFCM(subject, message, token, sendDate)
-        : sendFCM(subject, message, token);
+        ? await scheduleFCM(subject, message, token, sendDate)
+            .then((result) => result)
+            .catch((err) => console.error('err: ', err))
+        : await sendFCM(subject, message, token);
     }
+    
     if (!success)
       return res.status(400).json({ error: 'Notification Not Sent!' });
 

@@ -1,14 +1,20 @@
+// libs
+import { config } from 'dotenv';
 import nodemailer from 'nodemailer';
-import {config} from 'dotenv';
+
+// utils
+import scheduleTask from '../utils/scheduleTask.js';
+
 config();
 
-async function sendEmail(subject, message, recipientEmail) {
+const sendEmail = async (subject, message, recipientEmail) => {
+  if (!subject || !message || !recipientEmail) return;
   // Create a transporter
   const transporter = nodemailer.createTransport({
     service: 'gmail', // can be other services like Outlook or Yahoo
     auth: {
       user: process.env.USER_EMAIL, // your email address
-      pass: process.env.USER_PASS,  // your email password or app-specific password
+      pass: process.env.USER_PASS, // your email password or app-specific password
     },
   });
 
@@ -20,30 +26,19 @@ async function sendEmail(subject, message, recipientEmail) {
     text: message, // plain text body
     html: `<p>${message}</p>`, // HTML body
   };
-
   // Send the email
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log('Error occurred:', error);
-      return;
-    }
-    console.log('Email sent: ' + info.response);
-  });
-  return true;
+  try {
+    await transporter.sendMail(mailOptions);
+    return true;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return false;
+  }
 }
 
-const scheduleEmail = (subject, message, recipientEmail, sendDate) => {
-  const currentDate = new Date();
-  const delay = sendDate - currentDate;
-
-  if (delay < 0) {
-    console.log('Send date is in the past. Email will not be sent.');
-    return;
-  }
-
-  setTimeout(() => {
-    sendEmail(subject, message, recipientEmail);
-  }, delay);
+const scheduleEmail = async (subject, message, recipientEmail, sendDate) => {
+  if(!subject || !message || !recipientEmail || !sendDate) return;
+  return await scheduleTask(sendEmail, [subject, message, recipientEmail], sendDate);
 };
 
-export {sendEmail, scheduleEmail};
+export { scheduleEmail, sendEmail };
