@@ -1,4 +1,4 @@
-import { scheduleSMS, sendSMS } from '../services/sendSMS';
+import { scheduleSMS, sendSMS } from '../../services/sendSMS';
 jest.setTimeout(20000);
 
 describe('/services/sendSMS.js', () => {

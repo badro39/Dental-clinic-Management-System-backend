@@ -37,8 +37,8 @@ router.post('/refreshCookie', async (req, res) => {
       .cookie('token', newToken, {
         maxAge: 60 * 60 * 1000,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        secure: process.env.NODE_ENV === 'prod',
+        sameSite: process.env.NODE_ENV === 'prod' ? 'none' : 'lax',
       })
       .status(200)
       .json({ message: 'Token refreshed successfully' });
@@ -47,8 +47,8 @@ router.post('/refreshCookie', async (req, res) => {
       return res
         .clearCookie('token', {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+          secure: process.env.NODE_ENV === 'prod',
+          sameSite: process.env.NODE_ENV === 'prod' ? 'none' : 'lax',
         })
         .status(401)
         .json({ err: 'Token expired!' });

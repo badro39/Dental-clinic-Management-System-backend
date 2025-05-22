@@ -32,3 +32,8 @@
 
 #config
 /config/serviceAccount.json
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault

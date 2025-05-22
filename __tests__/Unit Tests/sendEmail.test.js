@@ -1,4 +1,4 @@
-import { sendEmail, scheduleEmail } from '../services/sendEmail';
+import { scheduleEmail, sendEmail } from '../../services/sendEmail';
 jest.setTimeout(20000);
 describe('/services/sendEmail.js', () => {
   const subject = 'Testing function';

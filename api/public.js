@@ -10,9 +10,6 @@ import bcrypt from 'bcrypt';
 // jsonwebtoken
 import jwt from 'jsonwebtoken';
 
-// crypto
-import crypto from "crypto";
-
 // models
 import { User } from '../models/user.js';
 
@@ -41,7 +38,7 @@ router.post(
   '/signin',
   [
     check('email', 'Invalid Credential').isEmail(),
-    check('password', `Password min length is ${minLength}`).isLength({
+    check('password', `Invalid Credential`).isLength({
       min: minLength,
     }),
   ],
@@ -64,8 +61,8 @@ router.post(
         .cookie('token', token, {
           maxAge: 60 * 15 * 1000,
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+          secure: process.env.NODE_ENV === 'prod',
+          sameSite: process.env.NODE_ENV === 'prod' ? 'none' : 'lax',
         })
         .status(200)
         .json({ message: 'Login successful' });
@@ -128,8 +125,8 @@ router.post('/signout', async (req, res, next) => {
     return res
       .clearCookie('token', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        secure: process.env.NODE_ENV === 'prod',
+        sameSite: process.env.NODE_ENV === 'prod' ? 'none' : 'lax',
       })
       .status(200)
       .json({ message: 'Logout successful' });
